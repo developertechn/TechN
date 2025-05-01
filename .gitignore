@@ -1,0 +1,2 @@
+# Exclude the .venv directory and all its contents
+.venv/
