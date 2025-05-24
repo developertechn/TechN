@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Page</title>
+    <style>
+        .nav-link {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body style="margin: 0;"></body>
+    <div style="background-color: #333; overflow: hidden;"></div>
+        <a href="#" class="nav-link" style="font-size: 20px; font-weight: bold;">
+            <img src="logo.png" alt="Logo" style="height: 30px; vertical-align: middle;"> MyLogo
+        </a>
+        <a href="#" class="nav-link">Home</a>
+        <a href="#" class="nav-link">About</a>
+        <a href="#" class="nav-link">Services</a>
+        <a href="#" class="nav-link">Contact</a>
+        <div style="float: right; padding: 10px;">
+            <input type="text" placeholder="Search..." style="padding: 5px; border: none; border-radius: 4px;">
+            <button style="padding: 5px 10px; background-color: #555; color: white; border: none; border-radius: 4px; cursor: pointer;">Search</button>
+        </div>
+    </div>
+    
+    <div style="background-color: #333; overflow: hidden; margin-top: 10px; width: 100%;">
+        <a href="#" class="nav-link">Python</a>
+        <a href="#" class="nav-link">JavaScript</a>
+        <a href="#" class="nav-link">Java</a>
+        <a href="#" class="nav-link">C++</a>
+        <a href="#" class="nav-link">C#</a>
+        <a href="#" class="nav-link">Ruby</a>
+        <a href="#" class="nav-link">PHP</a>
+        <a href="#" class="nav-link">Go</a>
+        <a href="#" class="nav-link">Swift</a>
+        <a href="#" class="nav-link">Kotlin</a>
+    </div>
+    <div style="margin: 20px auto; width: 80%; overflow: hidden;">
+        <div style="position: relative; width: 100%; max-width: 600px; margin: auto; overflow: hidden;">
+            <div style="display: flex; transition: transform 0.5s ease-in-out;" id="carousel">
+                <img src="image1.jpg" alt="Slide 1" style="width: 100%; flex-shrink: 0;">
+                <img src="image2.jpg" alt="Slide 2" style="width: 100%; flex-shrink: 0;">
+                <img src="image3.jpg" alt="Slide 3" style="width: 100%; flex-shrink: 0;">
+            </div>
+            <button onclick="prevSlide()" style="position: absolute; top: 50%; left: 10px; transform: translateY(-50%); background-color: rgba(0, 0, 0, 0.5); color: white; border: none; padding: 10px; cursor: pointer;">&#10094;</button>
+            <button onclick="nextSlide()" style="position: absolute; top: 50%; right: 10px; transform: translateY(-50%); background-color: rgba(0, 0, 0, 0.5); color: white; border: none; padding: 10px; cursor: pointer;">&#10095;</button>
+        </div>
+    </div>
+
+    <script>
+        let currentIndex = 0;
+
+        function showSlide(index) {
+            const carousel = document.getElementById('carousel');
+            const slides = carousel.children;
+            const totalSlides = slides.length;
+
+            if (index >= totalSlides) {
+                currentIndex = 0;
+            } else if (index < 0) {
+                currentIndex = totalSlides - 1;
+            } else {
+                currentIndex = index;
+            }
+
+            const offset = -currentIndex * 100;
+            carousel.style.transform = `translateX(${offset}%)`;
+        }
+
+        function nextSlide() {
+            showSlide(currentIndex + 1);
+        }
+
+        function prevSlide() {
+            showSlide(currentIndex - 1);
+        }
+    </script>
+</body>
+</html>
