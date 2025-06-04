@@ -7,12 +7,30 @@
     <title>Welcome to TechN</title>
     <link rel="stylesheet" href="/static/TechN.css">
     <script src="/static/jscode/slider.js"></script>
+    <link rel="icon" href="/static/images/favicon.ico" type="image/x-icon">
+    <style>
+        .course-card >img {
+            width: 100%;
+            height: 150px;
+            border-radius: 10px;
+        }
+        .course-card {
+            display:inline-grid;
+            width: 300px;
+            height: 300px;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            margin: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+    </style>
 </head>
 
 <body>
     <div class="nav">
-        <div class="logo" style="height: 20px;"></div>
-        <img src="" alt="Logo" class="logo">
+        <img src="" alt="Logo" class="logo" style="margin-right: 10px;">
         <div class="nav-right">
             <a href="/login" class="BT-A">Login</a>
             <a href="/signup" class="BT-A">Join For Free</a>
@@ -47,6 +65,32 @@
         <span class="dot" onclick="currentSlide(1)"></span>
         <span class="dot" onclick="currentSlide(2)"></span>
     </div>
+    <div class="welcome">
+        <div>
+            <span>Learn to Code</span>
+        </div>
+        <div>
+            <span><h1>Welcome To TechN</h1></span>
+        </div>
+        <div>
+            <span><h3>Explore Courses</h3></span>
+        </div>
+    </div>
+    <div class="course-slider">
+        <div class="course-card">
+            <img src="/static/images/web-deb.jpg" alt="Python Course">
+            <h3>Web Development</h3>
+            <p>Learn HTML, CSS, JavaScript and modern frameworks to build responsive websites and web applications. </p>
+        </div>
+        <div class="course-card">
+            <img src="/static/images/dat-science.jpg" alt="JavaScript Course">
+            <h3>Data Science & AI</h3>
+            <p>Master Python, data analysis, machine learning and artificial intelligence.</p>
+        </div>
+
+    </div>
+    <div class="footer">
+        <p>&copy; 2025 TechN. All rights reserved.</p>
     <!--
     <h1>Welcome to TechN</h1>
     {% if person %}

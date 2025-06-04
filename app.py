@@ -48,7 +48,9 @@ def login():
         password = request.form['password']
         # Perform login logic here
         return f"Logged in as {escape(username)}"
+        return render_template('UserDashboard.html', username=username)
     return render_template('login.html',error=re.error)
+
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
@@ -58,4 +60,9 @@ def upload_file():
         # Save the file to a directory named 'uploads'
         return f"File {escape(file.filename)} uploaded successfully!"
     return render_template('upload.html')
+@app.route('/dashboard')
+def dashboard():
+    return render_template('UserDashboard.html')
+if __name__ == '__main__':
+    app.run(debug=True)  # Set debug to True for development purposes
 debug = True
