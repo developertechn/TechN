@@ -3,18 +3,775 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Sign In - EduVerse</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Animated Background Elements */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><radialGradient id="a" cx="50%" cy="50%" r="50%"><stop offset="0%" style="stop-color:white;stop-opacity:0.1"/><stop offset="100%" style="stop-color:white;stop-opacity:0"/></radialGradient></defs><circle cx="200" cy="300" r="4" fill="url(%23a)"/><circle cx="600" cy="150" r="3" fill="url(%23a)"/><circle cx="800" cy="400" r="5" fill="url(%23a)"/><circle cx="300" cy="700" r="3" fill="url(%23a)"/><circle cx="900" cy="600" r="4" fill="url(%23a)"/><circle cx="100" cy="500" r="2" fill="url(%23a)"/></svg>') repeat;
+            opacity: 0.4;
+            animation: float 25s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-15px) rotate(120deg); }
+            66% { transform: translateY(-10px) rotate(240deg); }
+        }
+
+        /* Main Container */
+        .signin-container {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            max-width: 1000px;
+            width: 100%;
+            min-height: 600px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            position: relative;
+            z-index: 1;
+            animation: slideUp 0.8s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Left Panel - Branding */
+        .branding-panel {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .branding-panel::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .logo-large {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .tagline {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+            position: relative;
+            z-index: 2;
+        }
+
+        .features-list {
+            list-style: none;
+            position: relative;
+            z-index: 2;
+        }
+
+        .features-list li {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .feature-icon {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+        }
+
+        /* Right Panel - Sign In Form */
+        .signin-panel {
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .signin-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .signin-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+        }
+
+        .signin-subtitle {
+            color: #6b7280;
+            font-size: 1.1rem;
+        }
+
+        /* Form Styles */
+        .signin-form {
+            width: 100%;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8fafc;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+
+        .form-input:focus + .input-icon,
+        .form-group:hover .input-icon {
+            color: #667eea;
+        }
+
+        /* Password Toggle */
+        .password-toggle {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #9ca3af;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+
+        .password-toggle:hover {
+            color: #667eea;
+        }
+
+        /* Remember Me & Forgot Password */
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .remember-checkbox {
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
+            border: 2px solid #e2e8f0;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .remember-checkbox.checked {
+            background: #667eea;
+            border-color: #667eea;
+        }
+
+        .remember-checkbox.checked::after {
+            content: '✓';
+            position: absolute;
+            top: -2px;
+            left: 2px;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        .forgot-password {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .forgot-password:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
+        /* Sign In Button */
+        .signin-button {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+
+        .signin-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .signin-button:active {
+            transform: translateY(0);
+        }
+
+        .signin-button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Loading State */
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 0.5rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Divider */
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 1.5rem 0;
+            color: #9ca3af;
+            font-size: 0.9rem;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e2e8f0;
+        }
+
+        .divider span {
+            padding: 0 1rem;
+            background: white;
+        }
+
+        /* Social Sign In */
+        .social-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .social-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            background: white;
+            color: #374151;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-button:hover {
+            border-color: #667eea;
+            background: #f8fafc;
+            transform: translateY(-1px);
+        }
+
+        /* Sign Up Link */
+        .signup-link {
+            text-align: center;
+            color: #6b7280;
+            font-size: 0.95rem;
+        }
+
+        .signup-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .signup-link a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
+        /* Error Message */
+        .error-message {
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            display: none;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Success Message */
+        .success-message {
+            background: #d1fae5;
+            border: 1px solid #a7f3d0;
+            color: #065f46;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .signin-container {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+            }
+
+            .branding-panel {
+                display: none;
+            }
+
+            .signin-panel {
+                padding: 2rem;
+            }
+
+            .signin-title {
+                font-size: 1.8rem;
+            }
+
+            .social-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Accessibility */
+        .form-input:invalid {
+            border-color: #ef4444;
+        }
+
+        .form-input:invalid:focus {
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+        }
+
+        /* Focus visible for keyboard navigation */
+        .signin-button:focus-visible,
+        .social-button:focus-visible,
+        .forgot-password:focus-visible {
+            outline: 2px solid #667eea;
+            outline-offset: 2px;
+        }
+
+        /* High contrast mode support */
+        @media (prefers-contrast: high) {
+            .form-input {
+                border-width: 3px;
+            }
+            
+            .signin-button {
+                border: 2px solid #000;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h2>Login</h2>
-    <form action="/login" method="POST" target="_top">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required>
-        <br><br>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
-        <br><br>
-        <button type="submit">Login</button>
-    </form>
+    <div class="signin-container">
+        <!-- Left Panel - Branding -->
+        <div class="branding-panel">
+            <div class="logo-large">EduVerse</div>
+            <p class="tagline">Welcome back to your learning journey!</p>
+            <ul class="features-list">
+                <li>
+                    <div class="feature-icon">📚</div>
+                    <span>Access to 1,200+ courses</span>
+                </li>
+                <li>
+                    <div class="feature-icon">🎓</div>
+                    <span>Certified learning paths</span>
+                </li>
+                <li>
+                    <div class="feature-icon">👥</div>
+                    <span>Join 500K+ learners</span>
+                </li>
+                <li>
+                    <div class="feature-icon">📱</div>
+                    <span>Learn anywhere, anytime</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Right Panel - Sign In Form -->
+        <div class="signin-panel">
+            <div class="signin-header">
+                <h1 class="signin-title">Sign In</h1>
+                <p class="signin-subtitle">Continue your learning adventure</p>
+            </div>
+
+            <div class="error-message" id="errorMessage">
+                Invalid email or password. Please try again.
+            </div>
+
+            <div class="success-message" id="successMessage">
+                Welcome back! Redirecting to your dashboard...
+            </div>
+
+            <form class="signin-form" id="signinForm" action="/login" method="post" target="_top">
+                <div class="form-group">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        class="form-input" 
+                        placeholder="Enter your email address"
+                        required
+                        autocomplete="email"
+                    >
+                    <div class="input-icon">📧</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        class="form-input" 
+                        placeholder="Enter your password"
+                        required
+                        autocomplete="current-password"
+                    >
+                    <div class="input-icon">🔒</div>
+                    <button type="button" class="password-toggle" onclick="togglePassword()">👁️</button>
+                </div>
+
+                <div class="form-options">
+                    <label class="remember-me">
+                        <div class="remember-checkbox" onclick="toggleRemember(this)"></div>
+                        <span>Remember me</span>
+                    </label>
+                    <a href="#" class="forgot-password" onclick="showForgotPassword()">Forgot Password?</a>
+                </div>
+
+                <button type="submit" class="signin-button" id="signinButton">
+                    <div class="loading-spinner" id="loadingSpinner"></div>
+                    <span id="buttonText">Sign In</span>
+                </button>
+            </form>
+
+            <div class="divider">
+                <span>Or continue with</span>
+            </div>
+
+            <div class="social-buttons">
+                <a href="#" class="social-button" onclick="signInWith('google')">
+                    <span>🔍</span>
+                    <span>Google</span>
+                </a>
+                <a href="#" class="social-button" onclick="signInWith('microsoft')">
+                    <span>🖥️</span>
+                    <span>Microsoft</span>
+                </a>
+            </div>
+
+            <div class="signup-link">
+                Don't have an account? <a href="#" onclick="goToSignUp()">Sign up here</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let status;
+        // Form submission handler
+        document.getElementById('signinForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            handleSignIn();
+        });
+
+        function handleSignIn() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const button = document.getElementById('signinButton');
+            const buttonText = document.getElementById('buttonText');
+            const spinner = document.getElementById('loadingSpinner');
+            const errorMsg = document.getElementById('errorMessage');
+            const successMsg = document.getElementById('successMessage');
+
+            // Hide previous messages
+            errorMsg.style.display = 'none';
+            successMsg.style.display = 'none';
+
+            // Validate inputs
+            if (!email || !password) {
+                showError('Please fill in all fields.');
+                return;
+            }
+
+            if (!email.includes('@')) {
+                showError('Please enter a valid email address.');
+                return;
+            }
+
+            // Show loading state
+            button.disabled = true;
+            buttonText.style.display = 'none';
+            spinner.style.display = 'inline-block';
+
+            // Simulate API call
+            setTimeout(() => {
+                
+                login(email, password);
+                button.disabled = false;
+                buttonText.style.display = 'inline';
+                spinner.style.display = 'none';
+            }, 2000);
+        }
+
+        function showError(message) {
+            const errorMsg = document.getElementById('errorMessage');
+            errorMsg.textContent = message;
+            errorMsg.style.display = 'block';
+            
+            // Add shake animation
+            errorMsg.style.animation = 'none';
+            errorMsg.offsetHeight; // Trigger reflow
+            errorMsg.style.animation = 'shake 0.5s ease-in-out';
+        }
+
+        function showSuccess() {
+            const successMsg = document.getElementById('successMessage');
+            successMsg.style.display = 'block';
+        }
+
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleButton = document.querySelector('.password-toggle');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleButton.textContent = '🙈';
+            } else {
+                passwordInput.type = 'password';
+                toggleButton.textContent = '👁️';
+            }
+        }
+
+        function toggleRemember(checkbox) {
+            checkbox.classList.toggle('checked');
+        }
+
+        function showForgotPassword() {
+            alert('Forgot password functionality would open a password reset form or modal.');
+        }
+
+        function signInWith(provider) {
+            const button = event.target.closest('.social-button');
+            button.style.transform = 'translateY(2px)';
+            
+            setTimeout(() => {
+                button.style.transform = 'translateY(-1px)';
+                alert(`Signing in with ${provider}...`);
+            }, 150);
+        }
+
+        function goToSignUp() {
+            alert('Redirecting to sign up page...');
+        }
+
+        // Add input validation and styling
+        document.querySelectorAll('.form-input').forEach(input => {
+            input.addEventListener('input', function() {
+                const errorMsg = document.getElementById('errorMessage');
+                if (errorMsg.style.display === 'block') {
+                    errorMsg.style.display = 'none';
+                }
+            });
+
+            input.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'translateY(-2px)';
+            });
+
+            input.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'translateY(0)';
+                
+                // Validate email format
+                if (this.type === 'email' && this.value) {
+                    if (this.value.includes('@') && this.value.includes('.')) {
+                        this.style.borderColor = '#10b981';
+                    } else {
+                        this.style.borderColor = '#ef4444';
+                    }
+                }
+            });
+        });
+
+        // Keyboard navigation support
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && e.target.classList.contains('form-input')) {
+                const form = document.getElementById('signinForm');
+                form.requestSubmit();
+            }
+        });
+
+        // Demo credentials hint
+        console.log('Demo credentials: email = demo@eduverse.com, password = demo123');
+
+        // Add subtle animations on load
+        window.addEventListener('load', function() {
+            const inputs = document.querySelectorAll('.form-input');
+            inputs.forEach((input, index) => {
+                setTimeout(() => {
+                    input.style.transform = 'translateX(0)';
+                    input.style.opacity = '1';
+                }, index * 100);
+            });
+        });
+
+        // Auto-focus first input
+        document.getElementById('email').focus();
+
+        // #mycode
+        async function login(email, password) {
+            const res = await fetch("http://127.0.0.1:5000/login",{
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password })
+            });
+            const data = await res.json();
+            if(data.token)
+            {
+                localStorage.setItem("jwt",data.token);
+                showSuccess();
+                setTimeout(() => {
+                    window.location.href = `/dashboard/${data.token}`;
+                }, 2000);
+            }
+            else
+            {
+                showError(data.error);
+            }
+            console.log("Login response:", data);
+         }
+    </script>
 </body>
 </html>

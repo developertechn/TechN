@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Started - EduVerse</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .back-button {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            transform: translateX(-3px);
+        }
+
+        /* Main Container */
+        .main-container {
+            padding-top: 100px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 100px 2rem 2rem;
+        }
+
+        .onboarding-container {
+            max-width: 900px;
+            width: 100%;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            animation: slideUp 0.8s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            background: #f8fafc;
+            padding: 2rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .progress-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .progress-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #1a1a1a;
+        }
+
+        .progress-header p {
+            color: #6b7280;
+            font-size: 1.1rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 10px;
+            transition: width 0.8s ease;
+            width: 33%;
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+
+        .step.active {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .step.completed {
+            color: #10b981;
+        }
+
+        .step-circle {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .step.active .step-circle {
+            background: #667eea;
+            color: white;
+        }
+
+        .step.completed .step-circle {
+            background: #10b981;
+            color: white;
+        }
+
+        /* Form Container */
+        .form-container {
+            padding: 3rem;
+        }
+
+        .step-content {
+            display: none;
+        }
+
+        .step-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .step-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #1a1a1a;
+        }
+
+        .step-subtitle {
+            color: #6b7280;
+            margin-bottom: 2rem;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        /* Interest Cards */
+        .interests-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .interest-card {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .interest-card:hover {
+            transform: translateY(-2px);
+            border-color: #667eea;
+        }
+
+        .interest-card.selected {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .interest-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .interest-title {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        /* Goal Cards */
+        .goals-grid {
+            display: grid;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .goal-card {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .goal-card:hover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .goal-card.selected {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .goal-icon {
+            font-size: 2rem;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .goal-content h3 {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .goal-content p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            justify-content: space-between;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #6b7280;
+            border-color: #e2e8f0;
+        }
+
+        .btn-secondary:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Success State */
+        .success-content {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            color: #10b981;
+            margin-bottom: 1rem;
+            animation: bounce 1s ease-in-out;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateY(0);
+            }
+
+            40% {
+                transform: translateY(-10px);
+            }
+
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        .success-content h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #1a1a1a;
+        }
+
+        .success-content p {
+            color: #6b7280;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 80px 1rem 1rem;
+            }
+
+            .form-container {
+                padding: 2rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .interests-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .progress-steps {
+                display: none;
+            }
+        }
+
+        /* Loading State */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">EduVerse</div>
+            <a href="#" class="back-button">← Back to Home</a>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <div class="onboarding-container">
+            <!-- Progress Section -->
+            <div class="progress-container">
+                <div class="progress-header">
+                    <h1>Let's Get You Started!</h1>
+                    <p>Tell us about yourself so we can personalize your learning experience</p>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-steps">
+                    <div class="step active" id="step1">
+                        <div class="step-circle">1</div>
+                        <span>Personal Info</span>
+                    </div>
+                    <div class="step" id="step2">
+                        <div class="step-circle">2</div>
+                        <span>Interests</span>
+                    </div>
+                    <div class="step" id="step3">
+                        <div class="step-circle">3</div>
+                        <span>Goals</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Container -->
+            <div class="form-container">
+                <!-- Step 1: Personal Information -->
+                <div class="step-content active" id="content1">
+                    <h2 class="step-title">Personal Information</h2>
+                    <p class="step-subtitle">Let's start with some basic information about you</p>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="firstName">First Name</label>
+                            <input type="text" id="firstName" placeholder="Enter your first name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName">Last Name</label>
+                            <input type="text" id="lastName" placeholder="Enter your last name" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" placeholder="Enter your email address" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="experience">Learning Experience</label>
+                            <select id="experience" required>
+                                <option value="">Select your level</option>
+                                <option value="beginner">Complete Beginner</option>
+                                <option value="some">Some Experience</option>
+                                <option value="intermediate">Intermediate</option>
+                                <option value="advanced">Advanced</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="timeCommitment">Time Commitment</label>
+                            <select id="timeCommitment" required>
+                                <option value="">Hours per week</option>
+                                <option value="1-3">1-3 hours</option>
+                                <option value="4-7">4-7 hours</option>
+                                <option value="8-15">8-15 hours</option>
+                                <option value="16+">16+ hours</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="button-group">
+                        <div></div>
+                        <button class="btn btn-primary" onclick="nextStep()">Next Step →</button>
+                    </div>
+                </div>
+
+                <!-- Step 2: Interests -->
+                <div class="step-content" id="content2">
+                    <h2 class="step-title">What interests you?</h2>
+                    <p class="step-subtitle">Select the topics you'd like to explore (choose multiple)</p>
+
+                    <div class="interests-grid">
+                        <div class="interest-card" onclick="toggleInterest(this)" data-interest="programming">
+                            <div class="interest-icon">💻</div>
+                            <div class="interest-title">Programming</div>
+                        </div>
+                        <div class="interest-card" onclick="toggleInterest(this)" data-interest="design">
+                            <div class="interest-icon">🎨</div>
+                            <div class="interest-title">Design</div>
+                        </div>
+                        <div class="interest-card" onclick="toggleInterest(this)" data-interest="business">
+                            <div class="interest-icon">📊</div>
+                            <div class="interest-title">Business</div>
+                        </div>
+                        <div class="interest-card" onclick="toggleInterest(this)" data-interest="marketing">
+                            <div class="interest-icon">📢</div>
+                            <div class="interest-title">Marketing</div>
+                        </div>
+                        <div class="interest-card" onclick="toggleInterest(this)" data-interest="data">
+                            <div class="interest-icon">📈</div>
+                            <div class="interest-title">Data Science</div>
+                        </div>
+                        <div class="interest-card" onclick="toggleInterest(this)" data-interest="photography">
+                            <div class="interest-icon">📸</div>
+                            <div class="interest-title">Photography</div>
+                        </div>
+                        <div class="interest-card" onclick="toggleInterest(this)" data-interest="language">
+                            <div class="interest-icon">🌍</div>
+                            <div class="interest-title">Languages</div>
+                        </div>
+                        <div class="interest-card" onclick="toggleInterest(this)" data-interest="music">
+                            <div class="interest-icon">🎵</div>
+                            <div class="interest-title">Music</div>
+                        </div>
+                    </div>
+
+                    <div class="button-group">
+                        <button class="btn btn-secondary" onclick="prevStep()">← Previous</button>
+                        <button class="btn btn-primary" onclick="nextStep()" id="interestNext" disabled>Next Step
+                            →</button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Goals -->
+                <div class="step-content" id="content3">
+                    <h2 class="step-title">What's your main goal?</h2>
+                    <p class="step-subtitle">This helps us recommend the best learning path for you</p>
+
+                    <div class="goals-grid">
+                        <div class="goal-card" onclick="selectGoal(this)" data-goal="career">
+                            <div class="goal-icon">🚀</div>
+                            <div class="goal-content">
+                                <h3>Advance My Career</h3>
+                                <p>Learn skills to get promoted or land a better job</p>
+                            </div>
+                        </div>
+                        <div class="goal-card" onclick="selectGoal(this)" data-goal="switch">
+                            <div class="goal-icon">🔄</div>
+                            <div class="goal-content">
+                                <h3>Switch Careers</h3>
+                                <p>Transition to a completely new field or industry</p>
+                            </div>
+                        </div>
+                        <div class="goal-card" onclick="selectGoal(this)" data-goal="business">
+                            <div class="goal-icon">💼</div>
+                            <div class="goal-content">
+                                <h3>Start My Own Business</h3>
+                                <p>Learn entrepreneurship and business management skills</p>
+                            </div>
+                        </div>
+                        <div class="goal-card" onclick="selectGoal(this)" data-goal="hobby">
+                            <div class="goal-icon">🎯</div>
+                            <div class="goal-content">
+                                <h3>Personal Development</h3>
+                                <p>Learn new skills for personal satisfaction and growth</p>
+                            </div>
+                        </div>
+                        <div class="goal-card" onclick="selectGoal(this)" data-goal="certification">
+                            <div class="goal-icon">🏆</div>
+                            <div class="goal-content">
+                                <h3>Get Certified</h3>
+                                <p>Earn professional certifications in my field</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="button-group">
+                        <button class="btn btn-secondary" onclick="prevStep()">← Previous</button>
+                        <button class="btn btn-primary" onclick="completeOnboarding()" id="goalNext" disabled>
+                            <span id="buttonText">Complete Setup</span>
+                            <div class="loading" id="loadingSpinner" style="display: none;"></div>
+                        </button>
+                        <p id="output"></p>
+                    </div>
+                </div>
+
+                <!-- Success State -->
+                <div class="step-content" id="success">
+                    <div class="success-content">
+                        <div class="success-icon">🎉</div>
+                        <h2>Welcome to EduVerse!</h2>
+                        <p>Your account has been set up successfully. We've curated personalized course recommendations
+                            based on your preferences.</p>
+                        <div class="button-group">
+                            <button class="btn btn-primary" onclick="goToDashboard()">Go to Dashboard →</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let signupData;
+        let currentStep = 1;
+        let selectedInterests = [];
+        let selectedGoal = null;
+
+        function nextStep() {
+            if (!validateCurrentStep()) return;
+
+            currentStep++;
+            updateProgress();
+            showStep(currentStep);
+        }
+
+        function prevStep() {
+            currentStep--;
+            updateProgress();
+            showStep(currentStep);
+        }
+
+        function showStep(step) {
+            // Hide all steps
+            document.querySelectorAll('.step-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // Show current step
+            document.getElementById(`content${step}`).classList.add('active');
+
+            // Update step indicators
+            document.querySelectorAll('.step').forEach((stepEl, index) => {
+                stepEl.classList.remove('active', 'completed');
+                if (index + 1 < step) {
+                    stepEl.classList.add('completed');
+                    stepEl.querySelector('.step-circle').innerHTML = '✓';
+                } else if (index + 1 === step) {
+                    stepEl.classList.add('active');
+                    stepEl.querySelector('.step-circle').innerHTML = index + 1;
+                } else {
+                    stepEl.querySelector('.step-circle').innerHTML = index + 1;
+                }
+            });
+        }
+
+        function updateProgress() {
+            const progressFill = document.getElementById('progressFill');
+            const progress = (currentStep / 3) * 100;
+            progressFill.style.width = progress + '%';
+        }
+
+        function validateCurrentStep() {
+            switch (currentStep) {
+                case 1:
+                    const firstName = document.getElementById('firstName').value;
+                    const lastName = document.getElementById('lastName').value;
+                    const email = document.getElementById('email').value;
+                    const experience = document.getElementById('experience').value;
+                    const timeCommitment = document.getElementById('timeCommitment').value;
+
+                    if (!firstName || !lastName || !email || !experience || !timeCommitment) {
+                        alert('Please fill in all fields to continue.');
+                        return false;
+                    }
+
+                    if (!email.includes('@')) {
+                        alert('Please enter a valid email address.');
+                        return false;
+                    }
+                    return true;
+
+                case 2:
+                    if (selectedInterests.length === 0) {
+                        alert('Please select at least one area of interest.');
+                        return false;
+                    }
+                    return true;
+
+                case 3:
+                    if (!selectedGoal) {
+                        alert('Please select your main learning goal.');
+                        return false;
+                    }
+                    return true;
+            }
+            return true;
+        }
+
+        function toggleInterest(card) {
+            const interest = card.dataset.interest;
+
+            if (card.classList.contains('selected')) {
+                card.classList.remove('selected');
+                selectedInterests = selectedInterests.filter(i => i !== interest);
+            } else {
+                card.classList.add('selected');
+                selectedInterests.push(interest);
+            }
+
+            // Enable/disable next button
+            const nextBtn = document.getElementById('interestNext');
+            nextBtn.disabled = selectedInterests.length === 0;
+        }
+
+        function selectGoal(card) {
+            // Remove previous selection
+            document.querySelectorAll('.goal-card').forEach(c => c.classList.remove('selected'));
+
+            // Select current card
+            card.classList.add('selected');
+            selectedGoal = card.dataset.goal;
+
+            // Enable next button
+            document.getElementById('goalNext').disabled = false;
+        }
+
+        function completeOnboarding() {
+            const button = document.getElementById('goalNext');
+            const buttonText = document.getElementById('buttonText');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            signupData=Register();
+            // Show loading state
+            button.disabled = true;
+            buttonText.style.display = 'none';
+            loadingSpinner.style.display = 'inline-block';
+            // Simulate API call
+            setTimeout(() => {
+                // Hide all step contents
+                document.querySelectorAll('.step-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+
+                // Show success
+                document.getElementById('success').classList.add('active');
+
+                // Update progress to 100%
+                document.getElementById('progressFill').style.width = '100%';
+
+                // Mark all steps as completed
+                document.querySelectorAll('.step').forEach(step => {
+                    step.classList.remove('active');
+                    step.classList.add('completed');
+                    step.querySelector('.step-circle').innerHTML = '✓';
+                });
+
+            }, 2000);
+        }
+
+        function goToDashboard() {
+            // Here you would redirect to the dashboard
+            alert('Redirecting to your personalized dashboard...');
+        }
+
+        // Add input validation and styling
+        document.querySelectorAll('input, select').forEach(input => {
+            input.addEventListener('blur', function () {
+                if (this.value.trim() !== '') {
+                    this.style.borderColor = '#10b981';
+                } else {
+                    this.style.borderColor = '#e2e8f0';
+                }
+            });
+        });
+
+        // Email validation
+        document.getElementById('email').addEventListener('input', function () {
+            if (this.value.includes('@') && this.value.includes('.')) {
+                this.style.borderColor = '#10b981';
+            } else {
+                this.style.borderColor = '#ef4444';
+            }
+        });
+
+        // NAVNEET CODE
+
+        async function Register() {
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const email = document.getElementById('email').value;
+            const experience = document.getElementById('experience').value;
+            const timeCommitment = document.getElementById('timeCommitment').value;
+
+            const res = await fetch("http://127.0.0.1:5000/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({firstName,lastName,email,experience,timeCommitment })
+            });
+            document.getElementById("output").textContent = await res.text();
+            return res.status;
+        }
+    </script>
+</body>
+
+</html>

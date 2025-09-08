@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>Course Video Page</h1>
+    <div class="list">
+
+    </div>
+
+    <script>
+        // fetch('/api/courses')
+        //     .then(response => response.json())
+        //     .then(data => {
+        //         const listDiv = document.querySelector('.list');
+        //         data.forEach(course => {
+        //             const courseDiv = document.createElement('div');
+        //             courseDiv.innerHTML = `
+        //                 <h2>${course.title}</h2>
+        //                 <video width="320" height="240" controls>
+        //                     <source src="${course.video_url}" type="video/mp4">
+        //                     Your browser does not support the video tag.
+        //                 </video>
+        //                 <p>${course.description}</p>
+        //             `;
+        //             listDiv.appendChild(courseDiv);
+        //         });
+        //     })
+        //     .catch(error => console.error('Error fetching courses:', error));
+
+        const sampleData = [
+            {
+                title: "Course 1",
+                video_url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+                description: "This is the first course."
+            },
+            {
+                title: "Course 2",
+                video_url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+                description: "This is the second course."
+            }
+        ];
+
+        let listDiv = document.querySelector('.list');
+        sampleData.forEach(course => {
+            let courseDiv = document.createElement('div');
+            courseDiv.innerHTML = `
+                <h2>${course.title}</h2>
+                <video width="320" height="240" controls>
+                    <source src="${course.video_url}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <p>${course.description}</p>
+            `;
+            listDiv.appendChild(courseDiv);
+        });
+    </script>
+</body>
+
+</html>

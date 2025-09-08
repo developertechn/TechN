@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Drawing Canvas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .tool-group {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            padding: 0.5rem;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .tool-btn {
+            padding: 0.75rem;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 44px;
+            height: 44px;
+        }
+
+        .tool-btn:hover {
+            background: rgba(102, 126, 234, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .tool-btn.active {
+            background: #667eea;
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .color-picker {
+            width: 44px;
+            height: 44px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .color-picker:hover {
+            transform: scale(1.1);
+        }
+
+        .slider-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .slider {
+            width: 80px;
+            height: 6px;
+            border-radius: 3px;
+            background: #ddd;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .canvas-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            position: relative;
+        }
+
+        #canvas {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            cursor: crosshair;
+            transition: box-shadow 0.3s ease;
+        }
+
+        #canvas:hover {
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.25);
+        }
+
+        .status-bar {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 0.5rem 1rem;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #666;
+            backdrop-filter: blur(10px);
+        }
+
+        .selection-handles {
+            position: absolute;
+            pointer-events: none;
+        }
+
+        .handle {
+            width: 8px;
+            height: 8px;
+            background: #667eea;
+            border: 2px solid white;
+            border-radius: 50%;
+            position: absolute;
+            pointer-events: all;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .selection-box {
+            position: absolute;
+            border: 2px dashed #667eea;
+            background: rgba(102, 126, 234, 0.1);
+            pointer-events: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .drawing-indicator {
+            animation: pulse 1.5s infinite;
+        }
+
+        .tool-label {
+            font-size: 0.8rem;
+            color: #666;
+            margin-left: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="toolbar">
+            <div class="tool-group">
+                <button class="tool-btn active" id="drawTool" title="Draw">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="m18 2 4 4-14 14H4v-4L18 2z"/>
+                    </svg>
+                </button>
+                <button class="tool-btn" id="selectTool" title="Select">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/>
+                    </svg>
+                </button>
+                <button class="tool-btn" id="eraseTool" title="Erase">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.5l9.6-9.6c1-1 2.5-1 3.5 0l4.3 4.3c1 1 1 2.5 0 3.5L11.7 21Z"/>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="tool-group">
+                <input type="color" class="color-picker" id="colorPicker" value="#000000">
+                <span class="tool-label">Color</span>
+            </div>
+
+            <div class="tool-group">
+                <div class="slider-group">
+                    <span class="tool-label">Size:</span>
+                    <input type="range" class="slider" id="brushSize" min="1" max="50" value="5">
+                    <span id="sizeValue">5</span>
+                </div>
+            </div>
+
+            <div class="tool-group">
+                <button class="tool-btn" id="clearBtn" title="Clear Canvas">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6h14z"/>
+                    </svg>
+                </button>
+                <button class="tool-btn" id="undoBtn" title="Undo">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 7v6h6M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="canvas-container">
+        <canvas id="canvas" width="800" height="600"></canvas>
+        <div class="selection-handles" id="selectionHandles"></div>
+    </div>
+
+    <div class="status-bar">
+        <span id="statusText">Ready to draw • Click and drag to create strokes</span>
+    </div>
+
+    <script>
+        class DrawingApp {
+            constructor() {
+                this.canvas = document.getElementById('canvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.isDrawing = false;
+                this.currentTool = 'draw';
+                this.currentColor = '#000000';
+                this.brushSize = 5;
+                this.strokes = [];
+                this.selectedStrokes = [];
+                this.undoStack = [];
+                this.selectionBox = null;
+                this.isDragging = false;
+                this.dragOffset = { x: 0, y: 0 };
+                
+                this.initEventListeners();
+                this.updateStatus('Ready to draw • Click and drag to create strokes');
+            }
+
+            initEventListeners() {
+                // Tool selection
+                document.getElementById('drawTool').addEventListener('click', () => this.setTool('draw'));
+                document.getElementById('selectTool').addEventListener('click', () => this.setTool('select'));
+                document.getElementById('eraseTool').addEventListener('click', () => this.setTool('erase'));
+                
+                // Color and size
+                document.getElementById('colorPicker').addEventListener('change', (e) => {
+                    this.currentColor = e.target.value;
+                });
+                
+                document.getElementById('brushSize').addEventListener('input', (e) => {
+                    this.brushSize = parseInt(e.target.value);
+                    document.getElementById('sizeValue').textContent = this.brushSize;
+                });
+                
+                // Clear and undo
+                document.getElementById('clearBtn').addEventListener('click', () => this.clearCanvas());
+                document.getElementById('undoBtn').addEventListener('click', () => this.undo());
+                
+                // Canvas events
+                this.canvas.addEventListener('mousedown', (e) => this.handleMouseDown(e));
+                this.canvas.addEventListener('mousemove', (e) => this.handleMouseMove(e));
+                this.canvas.addEventListener('mouseup', (e) => this.handleMouseUp(e));
+                this.canvas.addEventListener('mouseout', (e) => this.handleMouseUp(e));
+                
+                // Touch events for mobile
+                this.canvas.addEventListener('touchstart', (e) => this.handleTouchStart(e));
+                this.canvas.addEventListener('touchmove', (e) => this.handleTouchMove(e));
+                this.canvas.addEventListener('touchend', (e) => this.handleTouchEnd(e));
+            }
+
+            setTool(tool) {
+                this.currentTool = tool;
+                this.clearSelection();
+                
+                // Update UI
+                document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
+                document.getElementById(tool + 'Tool').classList.add('active');
+                
+                // Update cursor
+                switch(tool) {
+                    case 'draw':
+                        this.canvas.style.cursor = 'crosshair';
+                        this.updateStatus('Drawing mode • Click and drag to draw');
+                        break;
+                    case 'select':
+                        this.canvas.style.cursor = 'default';
+                        this.updateStatus('Selection mode • Click objects to select, drag to move');
+                        break;
+                    case 'erase':
+                        this.canvas.style.cursor = 'grab';
+                        this.updateStatus('Erase mode • Click strokes to delete them');
+                        break;
+                }
+            }
+
+            getMousePos(e) {
+                const rect = this.canvas.getBoundingClientRect();
+                return {
+                    x: e.clientX - rect.left,
+                    y: e.clientY - rect.top
+                };
+            }
+
+            getTouchPos(e) {
+                const rect = this.canvas.getBoundingClientRect();
+                const touch = e.touches[0] || e.changedTouches[0];
+                return {
+                    x: touch.clientX - rect.left,
+                    y: touch.clientY - rect.top
+                };
+            }
+
+            handleMouseDown(e) {
+                const pos = this.getMousePos(e);
+                this.handlePointerDown(pos);
+            }
+
+            handleTouchStart(e) {
+                e.preventDefault();
+                const pos = this.getTouchPos(e);
+                this.handlePointerDown(pos);
+            }
+
+            handlePointerDown(pos) {
+                if (this.currentTool === 'draw') {
+                    this.startDrawing(pos);
+                } else if (this.currentTool === 'select') {
+                    this.handleSelection(pos);
+                } else if (this.currentTool === 'erase') {
+                    this.eraseAtPosition(pos);
+                }
+            }
+
+            handleMouseMove(e) {
+                const pos = this.getMousePos(e);
+                this.handlePointerMove(pos);
+            }
+
+            handleTouchMove(e) {
+                e.preventDefault();
+                const pos = this.getTouchPos(e);
+                this.handlePointerMove(pos);
+            }
+
+            handlePointerMove(pos) {
+                if (this.currentTool === 'draw' && this.isDrawing) {
+                    this.continuDrawing(pos);
+                } else if (this.currentTool === 'select' && this.isDragging) {
+                    this.dragSelectedStrokes(pos);
+                }
+            }
+
+            handleMouseUp(e) {
+                this.handlePointerUp();
+            }
+
+            handleTouchEnd(e) {
+                e.preventDefault();
+                this.handlePointerUp();
+            }
+
+            handlePointerUp() {
+                if (this.isDrawing) {
+                    this.stopDrawing();
+                }
+                this.isDragging = false;
+            }
+
+            startDrawing(pos) {
+                this.isDrawing = true;
+                this.saveState();
+                
+                const newStroke = {
+                    id: Date.now(),
+                    points: [pos],
+                    color: this.currentColor,
+                    size: this.brushSize,
+                    selected: false
+                };
+                
+                this.strokes.push(newStroke);
+                this.canvas.classList.add('drawing-indicator');
+                this.updateStatus('Drawing...');
+            }
+
+            continuDrawing(pos) {
+                if (!this.isDrawing) return;
+                
+                const currentStroke = this.strokes[this.strokes.length - 1];
+                currentStroke.points.push(pos);
+                
+                this.redraw();
+            }
+
+            stopDrawing() {
+                this.isDrawing = false;
+                this.canvas.classList.remove('drawing-indicator');
+                this.updateStatus('Drawing complete • Continue drawing or switch tools');
+            }
+
+            handleSelection(pos) {
+                const clickedStroke = this.getStrokeAt(pos);
+                
+                if (clickedStroke) {
+                    if (!clickedStroke.selected) {
+                        this.clearSelection();
+                        clickedStroke.selected = true;
+                        this.selectedStrokes = [clickedStroke];
+                        this.updateStatus(`Selected stroke • Drag to move`);
+                    }
+                    
+                    this.isDragging = true;
+                    this.dragOffset = {
+                        x: pos.x - (clickedStroke.bounds ? clickedStroke.bounds.centerX : pos.x),
+                        y: pos.y - (clickedStroke.bounds ? clickedStroke.bounds.centerY : pos.y)
+                    };
+                } else {
+                    this.clearSelection();
+                    this.updateStatus('No object selected • Click on a stroke to select it');
+                }
+                
+                this.redraw();
+            }
+
+            dragSelectedStrokes(pos) {
+                if (this.selectedStrokes.length === 0) return;
+                
+                const stroke = this.selectedStrokes[0];
+                const bounds = this.calculateStrokeBounds(stroke);
+                
+                const deltaX = pos.x - this.dragOffset.x - bounds.centerX;
+                const deltaY = pos.y - this.dragOffset.y - bounds.centerY;
+                
+                stroke.points = stroke.points.map(point => ({
+                    x: point.x + deltaX,
+                    y: point.y + deltaY
+                }));
+                
+                this.updateStatus(`Moving stroke... (${deltaX.toFixed(0)}, ${deltaY.toFixed(0)})`);
+                this.redraw();
+            }
+
+            eraseAtPosition(pos) {
+                const strokeToErase = this.getStrokeAt(pos);
+                if (strokeToErase) {
+                    this.saveState();
+                    const index = this.strokes.indexOf(strokeToErase);
+                    this.strokes.splice(index, 1);
+                    this.clearSelection();
+                    this.redraw();
+                    this.updateStatus('Stroke erased • Click another stroke to continue erasing');
+                }
+            }
+
+            getStrokeAt(pos) {
+                for (let i = this.strokes.length - 1; i >= 0; i--) {
+                    const stroke = this.strokes[i];
+                    if (this.isPointOnStroke(pos, stroke)) {
+                        return stroke;
+                    }
+                }
+                return null;
+            }
+
+            isPointOnStroke(point, stroke) {
+                const threshold = Math.max(stroke.size, 10);
+                
+                for (let i = 0; i < stroke.points.length - 1; i++) {
+                    const p1 = stroke.points[i];
+                    const p2 = stroke.points[i + 1];
+                    
+                    const distance = this.pointToLineDistance(point, p1, p2);
+                    if (distance <= threshold) {
+                        return true;
+                    }
+                }
+                
+                return false;
+            }
+
+            pointToLineDistance(point, lineStart, lineEnd) {
+                const A = point.x - lineStart.x;
+                const B = point.y - lineStart.y;
+                const C = lineEnd.x - lineStart.x;
+                const D = lineEnd.y - lineStart.y;
+                
+                const dot = A * C + B * D;
+                const lenSq = C * C + D * D;
+                
+                if (lenSq === 0) {
+                    return Math.sqrt(A * A + B * B);
+                }
+                
+                const param = dot / lenSq;
+                
+                let xx, yy;
+                if (param < 0) {
+                    xx = lineStart.x;
+                    yy = lineStart.y;
+                } else if (param > 1) {
+                    xx = lineEnd.x;
+                    yy = lineEnd.y;
+                } else {
+                    xx = lineStart.x + param * C;
+                    yy = lineStart.y + param * D;
+                }
+                
+                const dx = point.x - xx;
+                const dy = point.y - yy;
+                return Math.sqrt(dx * dx + dy * dy);
+            }
+
+            calculateStrokeBounds(stroke) {
+                if (stroke.points.length === 0) return null;
+                
+                let minX = stroke.points[0].x;
+                let maxX = stroke.points[0].x;
+                let minY = stroke.points[0].y;
+                let maxY = stroke.points[0].y;
+                
+                for (const point of stroke.points) {
+                    minX = Math.min(minX, point.x);
+                    maxX = Math.max(maxX, point.x);
+                    minY = Math.min(minY, point.y);
+                    maxY = Math.max(maxY, point.y);
+                }
+                
+                return {
+                    minX, maxX, minY, maxY,
+                    centerX: (minX + maxX) / 2,
+                    centerY: (minY + maxY) / 2,
+                    width: maxX - minX,
+                    height: maxY - minY
+                };
+            }
+
+            clearSelection() {
+                this.selectedStrokes = [];
+                this.strokes.forEach(stroke => stroke.selected = false);
+            }
+
+            redraw() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                // Draw all strokes
+                this.strokes.forEach(stroke => this.drawStroke(stroke));
+                
+                // Draw selection indicators
+                this.selectedStrokes.forEach(stroke => this.drawSelectionIndicator(stroke));
+            }
+
+            drawStroke(stroke) {
+                if (stroke.points.length < 2) return;
+                
+                this.ctx.strokeStyle = stroke.color;
+                this.ctx.lineWidth = stroke.size;
+                this.ctx.lineCap = 'round';
+                this.ctx.lineJoin = 'round';
+                
+                if (stroke.selected) {
+                    this.ctx.shadowColor = '#667eea';
+                    this.ctx.shadowBlur = 8;
+                } else {
+                    this.ctx.shadowBlur = 0;
+                }
+                
+                this.ctx.beginPath();
+                this.ctx.moveTo(stroke.points[0].x, stroke.points[0].y);
+                
+                for (let i = 1; i < stroke.points.length; i++) {
+                    this.ctx.lineTo(stroke.points[i].x, stroke.points[i].y);
+                }
+                
+                this.ctx.stroke();
+                this.ctx.shadowBlur = 0;
+            }
+
+            drawSelectionIndicator(stroke) {
+                const bounds = this.calculateStrokeBounds(stroke);
+                if (!bounds) return;
+                
+                this.ctx.strokeStyle = '#667eea';
+                this.ctx.lineWidth = 2;
+                this.ctx.setLineDash([5, 5]);
+                this.ctx.strokeRect(
+                    bounds.minX - 10, 
+                    bounds.minY - 10, 
+                    bounds.width + 20, 
+                    bounds.height + 20
+                );
+                this.ctx.setLineDash([]);
+            }
+
+            saveState() {
+                this.undoStack.push(JSON.parse(JSON.stringify(this.strokes)));
+                if (this.undoStack.length > 20) {
+                    this.undoStack.shift();
+                }
+            }
+
+            undo() {
+                if (this.undoStack.length > 0) {
+                    this.strokes = this.undoStack.pop();
+                    this.clearSelection();
+                    this.redraw();
+                    this.updateStatus('Undo complete');
+                }
+            }
+
+            clearCanvas() {
+                this.saveState();
+                this.strokes = [];
+                this.clearSelection();
+                this.redraw();
+                this.updateStatus('Canvas cleared');
+            }
+
+            updateStatus(message) {
+                document.getElementById('statusText').textContent = message;
+            }
+        }
+
+        // Initialize the app
+        window.addEventListener('load', () => {
+            new DrawingApp();
+        });
+    </script>
+</body>
+</html>
